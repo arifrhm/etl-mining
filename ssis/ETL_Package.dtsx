@@ -1,0 +1,22 @@
+USE OLAP_DB;
+GO
+
+CREATE PROCEDURE usp_GetSalesSummary
+AS
+BEGIN
+    SELECT 
+        p.ProductName,
+        SUM(od.Quantity) AS TotalQuantity,
+        SUM(od.Price * od.Quantity) AS TotalSales
+    FROM 
+        Sales s
+    JOIN 
+        OrderDetails od ON s.OrderID = od.OrderID
+    JOIN 
+        Products p ON od.ProductID = p.ProductID
+    GROUP BY 
+        p.ProductName
+    ORDER BY 
+        TotalSales DESC;
+END;
+GO

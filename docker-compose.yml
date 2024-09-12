@@ -1,0 +1,37 @@
+version: '3.8'
+
+services:
+  sqlserver_oltp:
+    image: mcr.microsoft.com/mssql/server:2019-latest
+    container_name: sqlserver_oltp
+    environment:
+      SA_PASSWORD: "YourStrong!Passw0rd"
+      ACCEPT_EULA: "Y"
+    ports:
+      - "1433:1433"
+    volumes:
+      - sqlserver_oltp_data:/var/opt/mssql
+    networks:
+      - sqlnetwork
+
+  sqlserver_olap:
+    image: mcr.microsoft.com/mssql/server:2019-latest
+    container_name: sqlserver_olap
+    environment:
+      SA_PASSWORD: "YourStrong!Passw0rd"
+      ACCEPT_EULA: "Y"
+    ports:
+      - "1434:1433"
+    volumes:
+      - sqlserver_olap_data:/var/opt/mssql
+      - ./init:/docker-entrypoint-initdb.d  # Mount volume for initialization scripts
+    networks:
+      - sqlnetwork
+
+volumes:
+  sqlserver_oltp_data:
+  sqlserver_olap_data:
+
+networks:
+  sqlnetwork:
+    driver: bridge
